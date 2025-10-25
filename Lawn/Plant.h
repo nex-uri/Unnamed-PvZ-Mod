@@ -52,6 +52,9 @@ enum PlantState
     STATE_SUNSHROOM_SMALL,
     STATE_SUNSHROOM_GROWING,
     STATE_SUNSHROOM_BIG,
+    STATE_TORCHWOOD_NOFLAME,
+    STATE_TORCHWOOD_HASFLAME,
+    STATE_TORCHWOOD_RELEASEDFLAME,
     STATE_MAGNETSHROOM_SUCKING,
     STATE_MAGNETSHROOM_CHARGING,
     STATE_BOWLING_UP,
@@ -150,7 +153,9 @@ public:
     int                     mNumFrames;                     
     PlantState              mState;                         
     int                     mPlantHealth;                   
-    int                     mPlantMaxHealth;                
+    int                     mPlantMaxHealth; 
+    int                     mTempHealthStorage;
+    bool                    mIsHealthEnabled;
     int                     mSubclass;                      
     int                     mDisappearCountdown;            
     int                     mDoSpecialCountdown;            
@@ -173,8 +178,9 @@ public:
     ReanimationID           mSleepingReanimID;  // the ZZZ from the sleeping plants
     int                     mBlinkCountdown;                
     int                     mRecentlyEatenCountdown;        
-    int                     mEatenFlashCountdown;           
-    int                     mBeghouledFlashCountdown;       
+    int                     mEatenFlashCountdown;
+    int                     mBeghouledFlashCountdown;
+    int                     mBlownAwayCountdown;
     float                   mShakeOffsetX;                  
     float                   mShakeOffsetY;                  
     MagnetItem              mMagnetItems[MAX_MAGNET_ITEMS]; 
@@ -188,7 +194,13 @@ public:
     bool                    mSquished;                      
     bool                    mIsAsleep;                      
     bool                    mIsOnBoard;                     
-    bool                    mHighlighted;                   
+    bool                    mHighlighted;
+    bool                    mTorchWoodHasFlames;
+    bool                    mIsTorchWoodEnabled;
+    bool                    mIsTorchwood;
+    int                     mChilledCounter;
+    int                     mIceTrapCounter;
+    int                     mPhaseCounter;
 
 public:
     Plant();
@@ -227,6 +239,10 @@ public:
     void                    DoSquashDamage();
     void                    BurnRow(int theRow);
     void                    IceZombies();
+    void                    StopsTorchwoodMoving();
+    void                    FreezePlant();
+    void                    ApplyChill(bool theIceTrap);
+    void                    OverrideParticleColor(TodParticleSystem* aParticle);
     void                    BlowAwayFliers(int theX, int theRow);
     void                    UpdateGraveBuster();
     TodParticleSystem*      AddAttachedParticle(int thePosX, int thePosY, int theRenderPosition, ParticleEffect theEffect);
@@ -253,6 +269,7 @@ public:
     void                    SetSleeping(bool theIsAsleep);
     void                    UpdateShooting();
     void                    DrawShadow(Graphics* g, float theOffsetX, float theOffsetY);
+    void                    DrawChillOverlay(Graphics* g, bool theFront, SeedType theSeedType);
     void                    UpdateScaredyShroom();
     int                     DistanceToClosestZombie();
     void                    UpdateSpikeweed();
@@ -272,6 +289,7 @@ public:
     void                    CobCannonFire(int theTargetX, int theTargetY);
     void                    UpdateGoldMagnetShroom();
     /*inline*/ bool         IsOnBoard();
+    /*inline*/ bool         IsOnBloverBoard();
     void                    RemoveEffects();
     void                    UpdateCoffeeBean();
     void                    UpdateUmbrella();
@@ -293,6 +311,8 @@ public:
     void                    GoldMagnetFindTargets();
     bool                    IsAGoldMagnetAboutToSuck();
     bool                    DrawMagnetItemsOnTop();
+    bool                    IsFirePlant();
+    bool                    IsFrozenPlant(SeedType theSeedType);
 };
 
 float                       PlantDrawHeightOffset(Board* theBoard, Plant* thePlant, SeedType theSeedType, int theCol, int theRow);

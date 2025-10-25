@@ -570,7 +570,7 @@ void Board::PickZombieWaves()
 	{
 		if (mApp->IsWhackAZombieLevel())
 		{
-			mNumWaves = 8;
+			mNumWaves = 20;
 		}
 		else
 		{
@@ -589,7 +589,7 @@ void Board::PickZombieWaves()
 		else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_ZEN_GARDEN || aGameMode == GameMode::GAMEMODE_TREE_OF_WISDOM || mApp->IsSquirrelLevel())
 			mNumWaves = 0;
 		else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_WHACK_A_ZOMBIE)
-			mNumWaves = 12;
+			mNumWaves = 30;
 		else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_WALLNUT_BOWLING || aGameMode == GameMode::GAMEMODE_CHALLENGE_AIR_RAID ||
 				 aGameMode == GameMode::GAMEMODE_CHALLENGE_GRAVE_DANGER || aGameMode == GameMode::GAMEMODE_CHALLENGE_HIGH_GRAVITY ||
 				 aGameMode == GameMode::GAMEMODE_CHALLENGE_PORTAL_COMBAT || aGameMode == GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS ||
@@ -640,13 +640,13 @@ void Board::PickZombieWaves()
 		}
 		else
 		{
-			aZombiePoints = aWave / 3 + 1;
+			aZombiePoints = aWave / 2 + 1;
 		}
 
 		if (aIsFlagWave)
 		{
 			int aPlainZombiesNum = min(aZombiePoints, 8);
-			aZombiePoints *= 2.5f;
+			aZombiePoints *= 2.8f;
 
 			if (mApp->mGameMode != GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS && mApp->mGameMode != GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS_2)
 			{
@@ -1129,7 +1129,19 @@ void Board::InitZombieWavesForLevel(int theForLevel)
 		return;
 	}
 
-	for (int aZombieType = ZombieType::ZOMBIE_NORMAL; aZombieType < ZombieType::NUM_ZOMBIE_TYPES; aZombieType++)
+	int aZombieType = 0;
+	GameMode aGameMode = mApp->mGameMode;
+
+	if (aGameMode == GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS || aGameMode == GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS_2)
+	{
+		aZombieType = ZombieType::ZOMBIE_PEA_HEAD;
+	}
+	else
+	{
+		aZombieType = ZombieType::ZOMBIE_NORMAL;
+	}
+
+	for (aZombieType; aZombieType < ZombieType::NUM_ZOMBIE_TYPES; aZombieType++)
 	{
 		mZombieAllowed[aZombieType] = CanZombieSpawnOnLevel((ZombieType)aZombieType, theForLevel);
 	}
@@ -1494,8 +1506,7 @@ void Board::InitLevel()
 	{
 		TOD_ASSERT(mSeedBank->mNumPackets == 3);
 		mSeedBank->mSeedPackets[0].SetPacketType(SeedType::SEED_POTATOMINE);
-		mSeedBank->mSeedPackets[1].SetPacketType(SeedType::SEED_GRAVEBUSTER);
-		mSeedBank->mSeedPackets[2].SetPacketType(mApp->IsAdventureMode() ? SeedType::SEED_CHERRYBOMB : SeedType::SEED_ICESHROOM);
+		mSeedBank->mSeedPackets[1].SetPacketType(mApp->IsAdventureMode() ? SeedType::SEED_CHERRYBOMB : SeedType::SEED_ICESHROOM);
 	}
 	else if (!ChooseSeedsOnCurrentLevel() && !HasConveyorBeltSeedBank())
 	{
@@ -2391,7 +2402,9 @@ ZombieType Board::PickGraveRisingZombieType(int theZombiePoints)
 ZombieType Board::PickZombieType(int theZombiePoints, int theWaveIndex, ZombiePicker* theZombiePicker)
 {
 	int aPickCount = 0;
+	GameMode aGameMode = mApp->mGameMode;
 	TodWeightedArray aZombieWeightArray[ZombieType::NUM_ZOMBIE_TYPES];
+
 	for (int aZombieType = ZombieType::ZOMBIE_NORMAL; aZombieType < ZombieType::NUM_ZOMBIE_TYPES; aZombieType++)
 	{
 		if (!mZombieAllowed[aZombieType])
@@ -2399,7 +2412,6 @@ ZombieType Board::PickZombieType(int theZombiePoints, int theWaveIndex, ZombiePi
 
 		const ZombieDefinition& aZombieDef = GetZombieDefinition((ZombieType)aZombieType);
 
-		GameMode aGameMode = mApp->mGameMode;
 		if (aZombieType == ZombieType::ZOMBIE_BUNGEE && mApp->IsSurvivalEndless(aGameMode))
 		{
 			if (!IsFlagWave(theWaveIndex))
@@ -2407,7 +2419,7 @@ ZombieType Board::PickZombieType(int theZombiePoints, int theWaveIndex, ZombiePi
 				continue;
 			}
 		}
-		else if (aGameMode != GameMode::GAMEMODE_CHALLENGE_POGO_PARTY && aGameMode != GameMode::GAMEMODE_CHALLENGE_BOBSLED_BONANZA && aGameMode != GameMode::GAMEMODE_CHALLENGE_AIR_RAID)
+		else if (aGameMode != GameMode::GAMEMODE_CHALLENGE_POGO_PARTY && aGameMode != GameMode::GAMEMODE_CHALLENGE_BOBSLED_BONANZA && aGameMode != GameMode::GAMEMODE_CHALLENGE_AIR_RAID && aGameMode != GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS && aGameMode != GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS_2)
 		{
 			int aFirstAllowedWave = aZombieDef.mFirstAllowedWave;
 			if (mApp->IsSurvivalEndless(aGameMode))
@@ -5257,7 +5269,7 @@ void Board::UpdateZombieSpawning()
 			}
 			else
 			{
-				mZombieCountDown = ZOMBIE_COUNTDOWN + Rand(ZOMBIE_COUNTDOWN_RANGE);
+				mZombieCountDown = ZOMBIE_COUNTDOWN + Rand(150);
 			}
 		}
 		mZombieCountDownStart = mZombieCountDown;
@@ -6530,7 +6542,7 @@ bool Board::ProgressMeterHasFlags()
 	if (mApp->IsFirstTimeAdventureMode() && mLevel == 1)
 		return false;
 
-	if (mApp->IsWhackAZombieLevel() ||
+	if (/*mApp->IsWhackAZombieLevel() ||*/
 		mApp->IsFinalBossLevel() ||
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED ||
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED_TWIST ||
@@ -8375,18 +8387,14 @@ void Board::KeyChar(SexyChar theChar)
 		AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
 		return;
 	}
-	//if (theChar == _S('H')
-	//{
-	//	AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
-	//	AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
-	//	AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
-	//	AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
-	//	AddZombie(ZombieType::ZOMBIE_PAIL, Zombie::ZOMBIE_WAVE_DEBUG);
-	//	return;
-	//}
+	if (theChar == _S('H'))
+	{
+		AddZombie(ZombieType::ZOMBIE_ICESHROOM_HEAD, Zombie::ZOMBIE_WAVE_DEBUG);
+		return;
+	}
 	if (theChar == _S('D'))
 	{
-		AddZombie(ZombieType::ZOMBIE_DIGGER, Zombie::ZOMBIE_WAVE_DEBUG);
+		AddZombie(ZombieType::ZOMBIE_THREEPEATER_HEAD, Zombie::ZOMBIE_WAVE_DEBUG);
 		return;
 	}
 	if (theChar == _S('p'))
@@ -8668,7 +8676,7 @@ int Board::GetNumSeedsInBank()
 	}
 	if (mApp->IsWhackAZombieLevel())
 	{
-		return 3;
+		return 2;
 	}
 	if (mApp->IsChallengeWithoutSeedBank())
 	{
@@ -9564,13 +9572,31 @@ void Board::KillAllZombiesInRadius(int theRow, int theX, int theY, int theRadius
 				{
 					aZombie->ApplyBurn();
 				}
-				else
+				else 
 				{
 					aZombie->TakeDamage(1800, 18U);
 				}
 			}
 		}
 	}
+
+	/*Plant* aPlant = nullptr;
+	while (IteratePlants(aPlant))
+	{
+
+		if (aPlant->mSeedType == SeedType::SEED_CHERRYBOMB)
+		{
+			aZombie->TakeDamage(1800, 18U);
+		}
+		else if (aPlant->mSeedType == SeedType::SEED_JALAPENO)
+		{
+			aZombie->TakeDamage(1500, 18U);
+		}
+		else if (aPlant->mSeedType == SeedType::SEED_DOOMSHROOM)
+		{
+			aZombie->TakeDamage(1000, 18U);
+		}
+	}*/
 
 	int aGridX = PixelToGridXKeepOnBoard(theX, theY);
 	int aGridY = PixelToGridYKeepOnBoard(theX, theY);

@@ -50,7 +50,10 @@ public:
     float                   mCobTargetX;            
     int                     mCobTargetRow;          
     ZombieID                mTargetZombieID;        
-    int                     mLastPortalX;           
+    int                     mLastPortalX;
+    int                     mMaxHits;
+    int                     mCountHits;
+    Zombie* mHitZombies[3];
 
 public:
     Projectile();
@@ -72,6 +75,7 @@ public:
     ProjectileDefinition&   GetProjectileDef();
     unsigned int            GetDamageFlags(Zombie* theZombie/* = nullptr*/);
     Rect                    GetProjectileRect();
+    Zombie*                 Projectile::FindCollisionTargetMindControlledZombie();
     void                    UpdateNormalMotion();
     Plant*                  FindCollisionTargetPlant();
     void                    ConvertToFireball(int theGridX);

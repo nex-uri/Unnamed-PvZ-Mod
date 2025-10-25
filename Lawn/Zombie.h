@@ -120,7 +120,11 @@ public:
     int                             mButteredCounter;                           
     int                             mIceTrapCounter;                            
     bool                            mMindControlled;                            
-    bool                            mBlowingAway;                               
+    bool                            mBlowingAway;
+    bool                            mLessBlowingAndChillingAway;
+    bool                            mPushesZombie;
+    bool                            mTorchWoodHasFlames;
+    bool                            mIsTorchWoodEnabled;
     bool                            mHasHead;                                   
     bool                            mHasArm;                                    
     bool                            mHasObject;                                 
@@ -157,11 +161,12 @@ public:
     int                             mBossStompCounter;                          
     int                             mBossHeadCounter;                           
     ReanimationID                   mBossFireBallReanimID;                      
-    ReanimationID                   mSpecialHeadReanimID;                       
+    ReanimationID                   mSpecialHeadReanimID;
     int                             mFireballRow;                               
     bool                            mIsFireBall;                                
     ReanimationID                   mMoweredReanimID;                           
-    int                             mLastPortalX;                               
+    int                             mLastPortalX;
+    int                             mRandomPicker;
 
 public:
     Zombie();
@@ -189,6 +194,7 @@ public:
     bool                            EffectedByDamage(unsigned int theDamageRangeFlags);
     void                            PickRandomSpeed();
     void                            UpdateZombiePolevaulter();
+    void                            UpdateZombieFootball();
     void                            UpdateZombieDolphinRider();
     void                            PickBungeeZombieTarget(int theColumn);
     int                             CountBungeesTargetingSunFlowers();
@@ -291,6 +297,7 @@ public:
     static /*inline*/ void          SetupDoorArms(Reanimation* aReanim, bool theShow);
     static void                     SetupReanimLayers(Reanimation* aReanim, ZombieType theZombieType);
     /*inline*/ bool                 IsOnBoard();
+    /*inline*/ bool                 IsOnFireBoard();
     void                            DrawButter(Graphics* g, const ZombieDrawPosition& theDrawPos);
     bool                            IsImmobilizied();
     void                            ApplyButter();
@@ -304,6 +311,7 @@ public:
     void                            BobsledDie();
     void                            BobsledBurn();
     bool                            IsBobsledTeamWithSled();
+    void                            StopsTorchwoodPlantMoving();
     bool                            CanBeFrozen();
     bool                            CanBeChilled();
     void                            UpdateZombieSnorkel();
@@ -367,13 +375,26 @@ public:
     void                            RemoveColdEffects();
     void                            BossHeadSpitEffect();
     void                            DrawBossFireBall(Graphics* g, const ZombieDrawPosition& theDrawPos);
+    void                            UpdateZombiePeaHeadMinigameFixer();
     void                            UpdateZombiePeaHead();
+    void                            UpdateZombiePeaHeadMinigame();
+    void                            UpdateZombieRepeaterHead();
+    void                            UpdateZombieRepeaterHeadMinigame();
+    void                            UpdateZombieThreepeaterHead();
+    void                            UpdateZombieThreepeaterHeadMinigame();
     void                            UpdateZombieJalapenoHead();
+    void                            UpdateZombieJalapenoHeadMinigame();
     void                            ApplyBossSmokeParticles(bool theEnable);
     void                            UpdateZombiquarium();
     bool                            ZombiquariumFindClosestBrain();
+    void                            UpdateZombieIceShroomHead();
+    void                            UpdateZombieIceShroomHeadMinigame();
+    void                            UpdateZombieTorchwoodHead();
+    void                          UpdateZombieTorchwoodHeadMinigame();
     void                            UpdateZombieGatlingHead();
+    void                            UpdateZombieGatlingHeadMinigame();
     void                            UpdateZombieSquashHead();
+    void                            UpdateZombieSquashHeadMinigame();
     bool                            IsTanglekelpTarget();
     bool                            HasYuckyFaceImage();
     bool                            IsTangleKelpTarget();

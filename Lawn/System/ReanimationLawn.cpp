@@ -319,6 +319,17 @@ MemoryImage* ReanimatorCache::MakeCachedZombieFrame(ZombieType theZombieType)
 			aReanim.AssignRenderGroupToTrack("anim_head2", RENDER_GROUP_HIDDEN);
 			aReanim.AssignRenderGroupToTrack("anim_hair", RENDER_GROUP_HIDDEN);
 		}
+		else if (theZombieType == ZombieType::ZOMBIE_ICESHROOM_HEAD) {
+			Reanimation aReanimHead;
+			aReanimHead.ReanimationInitializeType(aPosX + 55, aPosY - 2, ReanimationType::REANIM_WALLNUT);
+			aReanimHead.SetFramesForLayer("anim_idle");
+			aReanimHead.OverrideScale(-0.8f, 0.8f);
+			aReanimHead.Draw(&aMemoryGraphics);
+			aReanim.AssignRenderGroupToTrack("Zombie_neck", RENDER_GROUP_HIDDEN);
+			aReanim.AssignRenderGroupToTrack("anim_head1", RENDER_GROUP_HIDDEN);
+			aReanim.AssignRenderGroupToTrack("anim_head2", RENDER_GROUP_HIDDEN);
+			aReanim.AssignRenderGroupToTrack("anim_hair", RENDER_GROUP_HIDDEN);
+		}
 		else if (theZombieType == ZombieType::ZOMBIE_JALAPENO_HEAD)
 		{
 			Reanimation aReanimHead;
