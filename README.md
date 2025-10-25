@@ -1,5 +1,5 @@
-# PvZ Quality of the Lawn-Decompile
- A edit of the PvZ Decompile that adds QoL features
+# PvZ Decompile
+ A Decompiled Source of Plants Vs. Zombies
 
 # Credits:
 Electr0Gunner.
