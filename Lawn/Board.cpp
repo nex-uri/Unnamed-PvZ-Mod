@@ -517,7 +517,18 @@ void Board::AddGraveStones(int theGridX, int theCount, MTRand& theLevelRNG)
 
 int Board::GetNumWavesPerFlag()
 {
-	return (mApp->IsFirstTimeAdventureMode() && mNumWaves < 10) ? mNumWaves : 10;
+	if (mApp->IsFirstTimeAdventureMode() && mNumWaves < 10) 
+	{
+		return mNumWaves;
+	}
+	else if (mApp->IsMiniBossLevel() || mLevel == 40)
+	{
+		return mNumWaves;
+	}
+	else
+	{
+		return 10;
+	}
 }
 
 bool Board::IsFlagWave(int theWaveNumber)
