@@ -130,6 +130,7 @@ ReanimationParams gLawnReanimationArray[(int)ReanimationType::NUM_REANIMS] = {
 	{ ReanimationType::REANIM_ZENGARDEN_PHONOGRAPH,                 "reanim\\ZenGarden_phonograph.reanim",              1 },
 	{ ReanimationType::REANIM_DIAMOND,                              "reanim\\Diamond.reanim",                           0 },
 	{ ReanimationType::REANIM_ZOMBIE_HAND,                          "reanim\\Zombie_hand.reanim",                       1 },
+	{ ReanimationType::REANIM_ZOMBIE_THREEPEATER,                   "reanim\\Zombie_threepeater.reanim",                0 },
 	{ ReanimationType::REANIM_STINKY,                               "reanim\\Stinky.reanim",                            0 },
 	{ ReanimationType::REANIM_RAKE,                                 "reanim\\Rake.reanim",                              0 },
 	{ ReanimationType::REANIM_RAIN_CIRCLE,                          "reanim\\Rain_circle.reanim",                       0 },

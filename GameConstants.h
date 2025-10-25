@@ -24,14 +24,14 @@ const int           SEED_PACKET_HEIGHT = 70;
 const int           IMITATER_DIALOG_WIDTH = 500;
 const int           IMITATER_DIALOG_HEIGHT = 600;
 
-const int			ADVENTURE_AREAS = 5;
+const int			ADVENTURE_AREAS = 7;
 const int			LEVELS_PER_AREA = 10;
 const int           NUM_LEVELS = ADVENTURE_AREAS * LEVELS_PER_AREA;
 const int			FINAL_LEVEL = NUM_LEVELS;
 const int           FLAG_RAISE_TIME = 100;
 const int           LAST_STAND_FLAGS = 5;
-const int           ZOMBIE_COUNTDOWN_FIRST_WAVE = 1800;
-const int           ZOMBIE_COUNTDOWN = 2500;
+const int           ZOMBIE_COUNTDOWN_FIRST_WAVE = 1000;
+const int           ZOMBIE_COUNTDOWN = 2250;
 const int           ZOMBIE_COUNTDOWN_RANGE = 600;
 const int           ZOMBIE_COUNTDOWN_BEFORE_FLAG = 4500;
 const int           ZOMBIE_COUNTDOWN_BEFORE_REPICK = 5499;
