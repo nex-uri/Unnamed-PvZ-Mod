@@ -36,7 +36,7 @@ int gZombieWaves[NUM_LEVELS] = {
 	30, 30, 30, 30, 20, 30, 30, 40, 40, 30,
 	20, 30, 30, 40, 20, 40, 40, 30, 40, 30,
 	10, 20, 20, 30, 20, 20, 30, 20, 30, 30,
-	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	10,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
 
 ZombieAllowedLevels gZombieAllowedLevels[NUM_ZOMBIE_TYPES] = {  
@@ -47,7 +47,7 @@ ZombieAllowedLevels gZombieAllowedLevels[NUM_ZOMBIE_TYPES] = {
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+			1,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 		}
 	},
 	{ ZOMBIE_FLAG, 
