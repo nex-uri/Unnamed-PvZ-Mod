@@ -263,6 +263,7 @@ public:
     void                    DrawMagnetItems(Graphics* g);
     void                    UpdateDoomShroom();
     void                    UpdateIceShroom();
+    void    	            StopsTorchwoodPlantMoving();
     void                    UpdatePotato();
     int                     CalcRenderOrder();
     void                    AnimateNuts();

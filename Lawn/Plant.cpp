@@ -135,9 +135,11 @@ void Plant::PlantInitialize(int theGridX, int theGridY, SeedType theSeedType, Se
     mRenderOrder = CalcRenderOrder();
     mChilledCounter = 0;
     mIceTrapCounter = 0;
+    mTempHealthStorage = 0;
     mIsTorchwood = false;
     mTorchWoodHasFlames = false;
     mIsTorchWoodEnabled = false;
+    mIsHealthEnabled = false;
 
     Reanimation* aBodyReanim = nullptr;
     if (aPlantDef.mReanimationType != ReanimationType::REANIM_NONE)
@@ -1643,6 +1645,34 @@ void Plant::UpdateIceShroom()
         mState = PlantState::STATE_DOINGSPECIAL;
         mDoSpecialCountdown = 100;
         mIsTorchwood = true;
+    }
+}
+
+void Plant::StopsTorchwoodPlantMoving() 
+{
+    Zombie* aZombie = nullptr;
+    while (mBoard->IterateZombies(aZombie))
+    {
+        Rect aZombierect = aZombie->GetZombieRect();
+        if (aZombie->mZombieType == ZombieType::ZOMBIE_TORCHWOOD_HEAD && aZombie->IsOnBoard())
+        {
+            aZombie->mHelmMaxHealth = 1000;
+
+            if (aZombie->mHelmHealth > aZombie->mHelmMaxHealth)
+            {
+                aZombie->mTempHealthStorage = aZombie->mHelmHealth;
+                aZombie->mHelmHealth -= aZombie->mHelmHealth - aZombie->mHelmMaxHealth;
+                aZombie->mIsHealthEnabled = true;
+            }
+            else if (aZombie->mHelmHealth == aZombie->mHelmMaxHealth)
+            {
+                aZombie->mTempHealthStorage = aZombie->mHelmHealth;
+                aZombie->mHelmHealth -= aZombie->mHelmMaxHealth;
+                aZombie->mIsHealthEnabled = true;
+            }
+
+            aZombie->mTorchWoodHasFlames = false;
+        }
     }
 }
 
@@ -4510,6 +4540,7 @@ void Plant::DoSpecial()
         {
             mState = PlantState::STATE_DOINGSPECIAL;
             BlowAwayFliers(mX, mRow);
+            StopsTorchwoodPlantMoving();
         }
         break;
     }
@@ -4576,6 +4607,7 @@ void Plant::DoSpecial()
         mApp->PlayFoley(FoleyType::FOLEY_FROZEN);
 
         IceZombies();
+        StopsTorchwoodPlantMoving();
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_ICE_TRAP);
         mIsTorchwood = false;

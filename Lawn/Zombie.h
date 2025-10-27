@@ -167,6 +167,8 @@ public:
     ReanimationID                   mMoweredReanimID;                           
     int                             mLastPortalX;
     int                             mRandomPicker;
+    int							    mTempHealthStorage;
+    bool							mIsHealthEnabled;
 
 public:
     Zombie();

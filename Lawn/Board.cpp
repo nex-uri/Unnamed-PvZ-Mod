@@ -8400,7 +8400,7 @@ void Board::KeyChar(SexyChar theChar)
 	}
 	if (theChar == _S('H'))
 	{
-		AddZombie(ZombieType::ZOMBIE_ICESHROOM_HEAD, Zombie::ZOMBIE_WAVE_DEBUG);
+		AddZombie(ZombieType::ZOMBIE_TORCHWOOD_HEAD, Zombie::ZOMBIE_WAVE_DEBUG);
 		return;
 	}
 	if (theChar == _S('D'))

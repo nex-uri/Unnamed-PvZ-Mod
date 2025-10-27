@@ -154,6 +154,7 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
     mMoweredReanimID = ReanimationID::REANIMATIONID_NULL;
     mLastPortalX = -1;
     mRandomPicker = 0;
+    mIsHealthEnabled = false;
 
     for (int i = 0; i < MAX_ZOMBIE_FOLLOWERS; i++)
     {
@@ -502,12 +503,14 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
             break;
         }
         else if (mRandomPicker == 2 && mApp->IsAdventureMode() && ((mBoard->mLevel >= 38 && mBoard->mLevel < 41))) {
-            mBodyHealth = 1400;
+            mHelmType = HelmType::HELMTYPE_INVISIBLE;
+            mHelmHealth = 700;
 
             ReanimShowPrefix("anim_hair", RENDER_GROUP_HIDDEN);
         }
         else if (mRandomPicker == 3 && mApp->IsAdventureMode() && ((mBoard->mLevel >= 34))) {
-            mBodyHealth = 850;
+            mHelmType = HelmType::HELMTYPE_INVISIBLE;
+            mHelmHealth = 500;
 
             ReanimShowPrefix("anim_hair", RENDER_GROUP_HIDDEN);
         }
@@ -640,7 +643,8 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
         else if (mRandomPicker == 2 && mApp->IsAdventureMode() && ((mBoard->mLevel >= 10 && mBoard->mLevel < 11) || (mBoard->mLevel >= 26))) {
             mZombiePhase = ZombiePhase::PHASE_NEWSPAPER_READING_COLORGRAY;
             
-            mBodyHealth = 600;
+            mHelmType = HelmType::HELMTYPE_INVISIBLE;
+            mHelmHealth = 300;
             mShieldHealth = 710;
 
             ReanimShowPrefix("anim_hair", RENDER_GROUP_NORMAL);
@@ -697,13 +701,15 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
             break;
         }
         else if (mRandomPicker == 2) {
-            mBodyHealth = 970;
+			mHelmType = HelmType::HELMTYPE_INVISIBLE;
+            mHelmHealth = 400;
             mZombiePhase = ZombiePhase::PHASE_DANCER_DANCING_IN_HAIRCOLORED1;
 
             ReanimShowPrefix("anim_hair", RENDER_GROUP_NORMAL);
         }
         else if (mRandomPicker == 3 && mApp->IsAdventureMode() && ((mBoard->mLevel >= 9 && mBoard->mLevel < 11) || (mBoard->mLevel >= 19))) {
-            mBodyHealth = 1070;
+            mHelmType = HelmType::HELMTYPE_INVISIBLE;
+            mHelmHealth = 600;
             mZombiePhase = ZombiePhase::PHASE_DANCER_DANCING_IN_HAIRCOLORED2;
 
             ReanimShowPrefix("anim_hair", RENDER_GROUP_NORMAL);
@@ -1000,8 +1006,6 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
 
     case ZombieType::ZOMBIE_GATLING_HEAD:
     {
-        mShieldType = ShieldType::SHIELDTYPE_DOOR;
-        mShieldHealth = 1150;
         LoadPlainZombieReanim();
         AttachShield();
         ReanimShowPrefix("anim_hair", RENDER_GROUP_HIDDEN);
@@ -1096,8 +1100,8 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
         TodScaleRotateTransformMatrix(aAttachEffect->mOffset, 65.0f, -5.0f, 0.2f, -0.8f, 0.8f);
 
 
-        mHelmType = HelmType::HELMTYPE_TORCHWOOD;
-        mHelmHealth = 4400;
+        mHelmType = HelmType::HELMTYPE_INVISIBLE;
+        mHelmHealth = 2000;
         mZombiePhase = ZombiePhase::PHASE_TORCHWOOD_RELEASEDFLAME;
         mTorchWoodHasFlames = true;
         mVariant = false;
@@ -2971,6 +2975,8 @@ void Zombie::UpdateZombieTorchwoodHead()
         ReanimatorTransform aTransform;
         aBodyReanim->GetCurrentTransform(aTrackIndex, &aTransform);
 
+
+
         mZombiePhase = ZombiePhase::PHASE_TORCHWOOD_NOFLAME;
     }
     else if (mIsTorchWoodEnabled && mChilledCounter == 0 && mZombiePhase == ZombiePhase::PHASE_TORCHWOOD_NOFLAME)
@@ -2990,6 +2996,15 @@ void Zombie::UpdateZombieTorchwoodHead()
     }
     else if (mPhaseCounter == 0 && mZombiePhase == ZombiePhase::PHASE_TORCHWOOD_HASFLAME) 
     {
+        mHelmMaxHealth = 2000;
+
+        if (mIsHealthEnabled)
+        {
+            mHelmHealth = mTempHealthStorage;
+            mTempHealthStorage = 0;
+            mIsHealthEnabled = false;
+        }
+
         mTorchWoodHasFlames = true;
         mIsTorchWoodEnabled = false;
 
@@ -5402,7 +5417,7 @@ void Zombie::AnimateChewSound()
 
                     mApp->PlayFoley(FoleyType::FOLEY_FIREPEA);
                     mApp->PlayFoley(FoleyType::FOLEY_IGNITE);
-                    TakeDamage(20, 3U);
+                    TakeDamage(40, 3U);
 
                     Reanimation* aFireReanim = mApp->AddReanimation(mPosX + 38.0f, mPosY, mRenderOrder + 1, ReanimationType::REANIM_JALAPENO_FIRE);
                     aFireReanim->mAnimTime = 0.25f;
@@ -8754,20 +8769,6 @@ void Zombie::StopsTorchwoodPlantMoving()
         Rect aPlantrect = aPlant->GetPlantRect();
         if (aPlant->IsFirePlant() && aPlant->IsOnBoard()) 
         {
-            /*if (aPlant->mPlantHealth > aPlant->mPlantMaxHealth)
-            {
-                aPlant->mPlantHealth -= aPlant->mPlantHealth - aPlant->mPlantMaxHealth;
-            }
-            else if (aPlant->mPlantHealth < aPlant->mPlantMaxHealth) 
-            {
-                aPlant->mPlantMaxHealth = 500;
-            }
-            else 
-            {
-                aPlant->mPlantHealth = 500;
-                aPlant->mPlantMaxHealth = 500;
-            }*/
-
             aPlant->mPlantMaxHealth = 500;
 
             if (aPlant->mPlantHealth > aPlant->mPlantMaxHealth)
